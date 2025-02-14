@@ -6,12 +6,21 @@ import org.springframework.web.bind.annotation.*;
 import ru.sidey383.crackhash.internal.dto.ManagerCallbackRequest;
 import ru.sidey383.crackhash.manager.dto.CrackStartAnswer;
 import ru.sidey383.crackhash.manager.dto.CrackStartRequest;
-import ru.sidey383.crackhash.manager.dto.CrackStatus;
 import ru.sidey383.crackhash.manager.dto.CrackStatusAnswer;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @RestController
 @RequiredArgsConstructor
 public class ManagerRestController {
+
+    private static final Set<Character> alphabet = Stream.concat(
+            IntStream.rangeClosed('a', 'z').mapToObj(c -> (char) c),
+            IntStream.rangeClosed('0', '9').mapToObj(c -> (char) c)
+    ).collect(Collectors.toUnmodifiableSet());
 
     private final ManagerCrackService managerCrackService;
 
@@ -20,7 +29,7 @@ public class ManagerRestController {
             @Valid @RequestBody
             CrackStartRequest request
     ) {
-        String requestId = managerCrackService.createRequest(request.hash(), request.maxLength());
+        String requestId = managerCrackService.createRequest(request.hash(), request.maxLength(), alphabet);
         return new CrackStartAnswer(requestId);
     }
 
@@ -29,7 +38,7 @@ public class ManagerRestController {
             @RequestParam("requestId")
             String requestId
     ) {
-        return new CrackStatusAnswer(CrackStatus.ERROR, null);
+        return managerCrackService.getStatus(requestId);
     }
 
     @PatchMapping("/internal/api/manager/hash/crack/request")
@@ -37,6 +46,7 @@ public class ManagerRestController {
             @Valid @RequestBody
             ManagerCallbackRequest callbackRequest
     ) {
+        managerCrackService.applyWorkerResult(callbackRequest.taskId(), callbackRequest.matches());
     }
 
 }

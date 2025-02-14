@@ -16,7 +16,7 @@ public class ApiExceptionHandler {
     public ResponseEntity<String> handleServiceException(ServiceException ex) {
         return new ResponseEntity<>(
                 ex.getMessage(),
-                HttpStatus.INTERNAL_SERVER_ERROR
+                ex.getErrorStatus().getStatusCode()
         );
     }
 

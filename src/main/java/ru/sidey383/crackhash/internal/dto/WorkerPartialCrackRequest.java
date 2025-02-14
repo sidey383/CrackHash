@@ -4,15 +4,17 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
-import java.util.List;
+import java.util.Collection;
 
+@Builder
 public record WorkerPartialCrackRequest(
         @NotBlank
         String hash,
         @NotNull
         @Size(min = 1)
-        List<Character> alphabet,
+        Collection<Character> alphabet,
         @Min(1)
         long length,
         @Min(1)

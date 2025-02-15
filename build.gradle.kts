@@ -20,6 +20,7 @@ repositories {
 }
 
 dependencies {
+    implementation("com.github.dpaukov:combinatoricslib3:3.4.0")
     implementation("org.springframework.boot:spring-boot-starter-web")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")

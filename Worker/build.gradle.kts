@@ -33,5 +33,12 @@ java {
 
 tasks.bootBuildImage {
     imageName.set("crackhash-worker:latest")
-    environment.set(mapOf("BP_JVM_VERSION" to "21", "BP_JVM_TYPE" to "jdk"))
+    environment.set(
+        mapOf(
+            "SPRING_PROFILES_ACTIVE" to "docker",
+            "MANAGER_ADDRESS" to "http://manager:8080",
+            "BP_JVM_VERSION" to "21",
+            "BP_JVM_TYPE" to "jdk"
+        )
+    )
 }

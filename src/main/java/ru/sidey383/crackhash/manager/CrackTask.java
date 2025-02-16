@@ -1,8 +1,8 @@
 package ru.sidey383.crackhash.manager;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,11 +13,11 @@ public class CrackTask {
 
     private final Map<String, WorkerNodeStatus> workerStatuses = new ConcurrentHashMap<>();
 
-    public void addWorker(String taskId, long partNumber) {
+    public void addWorker(@NotNull String taskId, long partNumber) {
         this.workerStatuses.put(taskId, new WorkerNodeStatus(taskId, partNumber, Optional.empty()));
     }
 
-    public record WorkerNodeStatus(String taskId, long partNumber, Optional<List<String>> result) {
+    record WorkerNodeStatus(@NotNull String taskId, long partNumber, @NotNull Optional<List<String>> result) {
     }
 
     public boolean isComplete() {
@@ -28,6 +28,7 @@ public class CrackTask {
         workerStatuses.computeIfPresent(taskId, (_, status) -> new WorkerNodeStatus(status.taskId(), status.partNumber(), Optional.of(result)));
     }
 
+    @NotNull
     public List<String> getResult() {
         return workerStatuses.values().stream()
                 .map(WorkerNodeStatus::result)
@@ -37,6 +38,7 @@ public class CrackTask {
                 .toList();
     }
 
+    @NotNull
     public Set<String> getWorkerTaskIds() {
         return Collections.unmodifiableSet(workerStatuses.keySet());
     }

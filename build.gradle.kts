@@ -23,6 +23,7 @@ dependencies {
     implementation("jakarta.validation:jakarta.validation-api:3.0.0")
     implementation("com.github.dpaukov:combinatoricslib3:3.4.0")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.jetbrains:annotations:24.0.0")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

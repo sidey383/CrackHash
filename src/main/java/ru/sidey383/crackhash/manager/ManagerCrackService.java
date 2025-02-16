@@ -2,6 +2,7 @@ package ru.sidey383.crackhash.manager;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import ru.sidey383.crackhash.core.ErrorStatus;
@@ -26,7 +27,8 @@ public class ManagerCrackService {
     private final Map<String, CrackTask> workerCrackTasks = new ConcurrentHashMap<>();
     private final WorkerNodeProvider workerNodeProvider;
 
-    public String createRequest(String hash, int maxLength, Set<Character> alphabet) {
+    @NotNull
+    public String createRequest(@NotNull String hash, int maxLength, @NotNull Set<Character> alphabet) throws ServiceException {
         String uuid = UUID.randomUUID().toString();
         List<WorkerNodeClient> clients = workerNodeProvider.getActualNodes();
         var requestBuilder = WorkerPartialCrackRequest.builder()
@@ -52,12 +54,13 @@ public class ManagerCrackService {
         return uuid;
     }
 
-    public void applyWorkerResult(String taskId, List<String> results) {
+    public void applyWorkerResult(@NotNull String taskId, @NotNull List<String> results) {
         log.debug("Apply worker results for task={}, count of result={}", taskId, results.size());
         workerCrackTasks.get(taskId).setResult(taskId, results);
     }
 
-    public CrackStatusAnswer getStatus(String taskId) {
+    @NotNull
+    public CrackStatusAnswer getStatus(@NotNull String taskId) throws ServiceException {
         log.debug("Status request by taskId {}", taskId);
         CrackTask task = requests.get(taskId);
         if (task == null) throw new ServiceException(ErrorStatus.WRONG_ARGS, "Can't found that task");

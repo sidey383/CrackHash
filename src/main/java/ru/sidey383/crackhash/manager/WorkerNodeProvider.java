@@ -1,5 +1,6 @@
 package ru.sidey383.crackhash.manager;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +21,8 @@ public class WorkerNodeProvider {
     @Value("${worker.addresses}")
     private final List<String> servers;
 
-    public List<WorkerNodeClient> getActualNodes() {
+    @NotNull
+    public List<WorkerNodeClient> getActualNodes() throws ServiceException {
         List<WorkerNodeClient> nodes = new ArrayList<>(servers.size());
         for (String server : servers) {
             URI uri;

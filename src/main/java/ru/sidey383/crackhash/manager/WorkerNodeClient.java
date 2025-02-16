@@ -1,9 +1,12 @@
 package ru.sidey383.crackhash.manager;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import ru.sidey383.crackhash.core.ErrorStatus;
+import ru.sidey383.crackhash.core.ServiceException;
 import ru.sidey383.crackhash.internal.dto.WorkerPartialCrackAnswer;
 import ru.sidey383.crackhash.internal.dto.WorkerPartialCrackRequest;
 
@@ -16,9 +19,13 @@ public class WorkerNodeClient {
     private final URI uri;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public WorkerPartialCrackAnswer sendRequest(WorkerPartialCrackRequest request) throws RestClientException {
+    @NotNull
+    public WorkerPartialCrackAnswer sendRequest(@NotNull WorkerPartialCrackRequest request) throws RestClientException, ServiceException {
         URI target = uri.resolve("/internal/api/worker/hash/crack/task");
-        return restTemplate.postForObject(target, request, WorkerPartialCrackAnswer.class);
+        WorkerPartialCrackAnswer answer = restTemplate.postForObject(target, request, WorkerPartialCrackAnswer.class);
+        if (answer == null)
+            throw new ServiceException(ErrorStatus.INTERNAL_ERROR ,"No response received from worker");
+        return answer;
     }
 
 }

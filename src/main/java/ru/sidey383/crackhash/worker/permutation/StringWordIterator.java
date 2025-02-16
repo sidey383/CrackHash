@@ -1,5 +1,7 @@
 package ru.sidey383.crackhash.worker.permutation;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Iterator;
@@ -8,14 +10,18 @@ import java.util.NoSuchElementException;
 
 public class StringWordIterator implements Iterator<String> {
 
+    @NotNull
     private BigInteger nextNumber;
+    @NotNull
     private BigInteger totalLengthNumber;
     private int currentLength;
     private final int maxLength;
+    @NotNull
     private final List<Character> alphabet;
+    @NotNull
     private final BigInteger alphabetLength;
 
-    StringWordIterator(BigInteger number, int maxLength, List<Character> alphabet) {
+    StringWordIterator(@NotNull BigInteger number, int maxLength, @NotNull List<Character> alphabet) {
         this.alphabet = Collections.unmodifiableList(alphabet);
         this.maxLength = maxLength;
         final int alphabetLength = alphabet.size();
@@ -43,6 +49,7 @@ public class StringWordIterator implements Iterator<String> {
         return currentLength < maxLength || nextNumber.compareTo(totalLengthNumber) < 0;
     }
 
+    @NotNull
     @Override
     public String next() {
         if (nextNumber.compareTo(totalLengthNumber) >= 0) {

@@ -1,5 +1,6 @@
 package ru.sidey383.crackhash.worker;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,11 @@ public class CrackService {
 
     private final ManagerNodeProvider managerNodeProvider;
 
-    public String startCrack(String hash, Collection<Character> alphabet, int length, long partCount, long partNumber) throws NoSuchAlgorithmException {
+    public String startCrack(
+            @NotNull String hash,
+            @NotNull Collection<Character> alphabet,
+            int length, long partCount, long partNumber
+    ) throws NoSuchAlgorithmException {
         IterableWords words = new IterableWords(length, alphabet.stream().distinct().toList());
         BigInteger totalCount = words.getTotalWordNumber();
         BigInteger start = totalCount.multiply(BigInteger.valueOf(partNumber)).divide(BigInteger.valueOf(partCount));
@@ -45,7 +50,7 @@ public class CrackService {
         return taskId;
     }
 
-    public void completeTask(String taskId, List<String> result) {
+    public void completeTask(@NotNull String taskId, @NotNull List<String> result) {
         log.debug("Task {} completed with {} results", taskId, result.size());
         ManagerCallbackRequest request = new ManagerCallbackRequest(taskId, result);
         try {

@@ -19,7 +19,7 @@ public class PermutationUtils {
             return BigInteger.valueOf(length + 1);
         var bigAlp = BigInteger.valueOf(alphabetSize);
         var bigAlpMinOne = bigAlp.add(MINUS_ONE);
-        return bigAlp.pow(length).add(MINUS_ONE).divide(bigAlpMinOne);
+        return bigAlp.pow(length + 1).add(MINUS_ONE).divide(bigAlpMinOne);
     }
 
 }

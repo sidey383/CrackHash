@@ -1,6 +1,8 @@
 package ru.sidey383.crackhash.manager;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.sidey383.crackhash.core.ServiceException;
 
@@ -12,9 +14,11 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class WorkerNodeProvider {
 
-    private final List<String> servers = List.of("http://worker-1", "http://worker-2", "http://worker-3", "http://worker-4");
+    @Value("${worker.addresses}")
+    private final List<String> servers;
 
     public List<WorkerNodeClient> getActualNodes() {
         List<WorkerNodeClient> nodes = new ArrayList<>(servers.size());

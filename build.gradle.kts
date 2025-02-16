@@ -20,13 +20,15 @@ repositories {
 }
 
 dependencies {
+    implementation("jakarta.validation:jakarta.validation-api:3.0.0")
     implementation("com.github.dpaukov:combinatoricslib3:3.4.0")
     implementation("org.springframework.boot:spring-boot-starter-web")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.assertj:assertj-core:3.27.2")
+    testImplementation("com.carrotsearch:junit-benchmarks:0.7.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    implementation("jakarta.validation:jakarta.validation-api:3.0.0")
 }
 
 tasks.test {

@@ -5,6 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 public record CrackStartRequest(
         @NotBlank
         String hash,
-        Long maxLength
+        int maxLength
 ) {
 }

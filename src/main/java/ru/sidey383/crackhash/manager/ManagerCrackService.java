@@ -26,7 +26,7 @@ public class ManagerCrackService {
     private final Map<String, CrackTask> workerCrackTasks = new ConcurrentHashMap<>();
     private final WorkerNodeProvider workerNodeProvider;
 
-    public String createRequest(String hash, long maxLength, Set<Character> alphabet) {
+    public String createRequest(String hash, int maxLength, Set<Character> alphabet) {
         String uuid = UUID.randomUUID().toString();
         List<WorkerNodeClient> clients = workerNodeProvider.getActualNodes();
         var requestBuilder = WorkerPartialCrackRequest.builder()
@@ -38,6 +38,7 @@ public class ManagerCrackService {
         for (int i = 0; i < clients.size(); i++) {
             WorkerNodeClient client = clients.get(i);
             try {
+                log.debug("Try to send task for worker {}, partialCount={}, partialNumber={}", client.getUri(), clients.size(), i);
                 WorkerPartialCrackAnswer answer = client.sendRequest(requestBuilder.partNumber(i).build());
                 task.addWorker(answer.taskId(), i);
             } catch (RestClientException e) {
@@ -47,14 +48,17 @@ public class ManagerCrackService {
         }
         task.getWorkerTaskIds().forEach(t -> workerCrackTasks.put(t, task));
         requests.put(uuid, task);
+        log.debug("Create task with id {}", uuid);
         return uuid;
     }
 
     public void applyWorkerResult(String taskId, List<String> results) {
+        log.debug("Apply worker results for task={}, count of result={}", taskId, results.size());
         workerCrackTasks.get(taskId).setResult(taskId, results);
     }
 
     public CrackStatusAnswer getStatus(String taskId) {
+        log.debug("Status request by taskId {}", taskId);
         CrackTask task = requests.get(taskId);
         if (task == null) throw new ServiceException(ErrorStatus.WRONG_ARGS, "Can't found that task");
         if (task.isComplete()) {

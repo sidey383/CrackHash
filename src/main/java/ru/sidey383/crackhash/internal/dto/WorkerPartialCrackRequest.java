@@ -16,7 +16,7 @@ public record WorkerPartialCrackRequest(
         @Size(min = 1)
         Collection<Character> alphabet,
         @Min(1)
-        long length,
+        int length,
         @Min(1)
         long partCount,
         @Min(0)

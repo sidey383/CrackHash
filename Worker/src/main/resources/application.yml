@@ -1,0 +1,5 @@
+server:
+  port: 8081
+
+manager:
+  address: http://localhost:8080

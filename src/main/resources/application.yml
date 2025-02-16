@@ -1,5 +1,0 @@
-manager:
-  address: http://localhost:8080
-worker:
-  addresses:
-    - http://localhost:8081

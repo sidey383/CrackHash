@@ -11,15 +11,17 @@ import java.util.Collection;
 @Builder
 public record WorkerPartialCrackRequest(
         @NotBlank
+        String requestId,
+        @Min(0)
+        int partNumber,
+        @Min(1)
+        int partCount,
+        @NotBlank
         String hash,
+        @Min(1)
+        int maxLength,
         @NotNull
         @Size(min = 1)
-        Collection<Character> alphabet,
-        @Min(1)
-        int length,
-        @Min(1)
-        long partCount,
-        @Min(0)
-        long partNumber
+        Collection<Character> alphabet
 ) {
 }

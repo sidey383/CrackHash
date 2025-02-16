@@ -25,10 +25,11 @@ public class CrackService {
 
     private final ManagerNodeProvider managerNodeProvider;
 
-    public String startCrack(
+    public void startCrack(
+            @NotNull String requestId,
             @NotNull String hash,
             @NotNull Collection<Character> alphabet,
-            int length, long partCount, long partNumber
+            int length, int partCount, int partNumber
     ) throws NoSuchAlgorithmException {
         IterableWords words = new IterableWords(length, alphabet.stream().distinct().toList());
         BigInteger totalCount = words.getTotalWordNumber();
@@ -37,22 +38,20 @@ public class CrackService {
         BigInteger count = end.add(start.negate());
         words.skip(start);
         words.setWordLimit(count);
-        String taskId = UUID.randomUUID().toString();
         MessageDigest digest = MessageDigest.getInstance("MD5");
         PartCrackTask task = new PartCrackTask(
-                (list) -> completeTask(taskId, list),
+                (list) -> completeTask(requestId, partNumber, list),
                 digest,
                 HexFormat.of().parseHex(hash),
                 words
         );
         log.debug("Start partial crack task. Check {} worlds of {}. From {} to {}", count, totalCount, start, end);
         executors.execute(task);
-        return taskId;
     }
 
-    public void completeTask(@NotNull String taskId, @NotNull List<String> result) {
-        log.debug("Task {} completed with {} results", taskId, result.size());
-        ManagerCallbackRequest request = new ManagerCallbackRequest(taskId, result);
+    public void completeTask(@NotNull String requestId, int partNumber, @NotNull List<String> result) {
+        log.debug("Task {} part {} completed with {} results", requestId, partNumber, result.size());
+        ManagerCallbackRequest request = new ManagerCallbackRequest(requestId, partNumber, result);
         try {
             managerNodeProvider.sendAnswer(request);
         } catch (RestClientException e) {

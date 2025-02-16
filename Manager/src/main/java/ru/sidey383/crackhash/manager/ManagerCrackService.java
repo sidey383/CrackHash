@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import ru.sidey383.crackhash.core.ErrorStatus;
 import ru.sidey383.crackhash.core.ServiceException;
-import ru.sidey383.crackhash.core.dto.WorkerPartialCrackAnswer;
 import ru.sidey383.crackhash.core.dto.WorkerPartialCrackRequest;
 import ru.sidey383.crackhash.manager.dto.CrackStatus;
 import ru.sidey383.crackhash.manager.dto.CrackStatusAnswer;
@@ -24,7 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ManagerCrackService {
 
     private final Map<String, CrackTask> requests = new ConcurrentHashMap<>();
-    private final Map<String, CrackTask> workerCrackTasks = new ConcurrentHashMap<>();
     private final WorkerNodeProvider workerNodeProvider;
 
     @NotNull
@@ -33,30 +31,31 @@ public class ManagerCrackService {
         List<WorkerNodeClient> clients = workerNodeProvider.getActualNodes();
         var requestBuilder = WorkerPartialCrackRequest.builder()
                 .hash(hash)
+                .requestId(uuid)
                 .alphabet(alphabet)
-                .length(maxLength)
+                .maxLength(maxLength)
                 .partCount(clients.size());
-        CrackTask task = new CrackTask();
+        CrackTask task = new CrackTask(clients.size());
         for (int i = 0; i < clients.size(); i++) {
             WorkerNodeClient client = clients.get(i);
             try {
                 log.debug("Try to send task for worker {}, partialCount={}, partialNumber={}", client.getUri(), clients.size(), i);
-                WorkerPartialCrackAnswer answer = client.sendRequest(requestBuilder.partNumber(i).build());
-                task.addWorker(answer.taskId(), i);
+                client.sendRequest(requestBuilder.partNumber(i).build());
             } catch (RestClientException e) {
                 log.error("Worker {} request error", client.getUri() , e);
                 throw new ServiceException("Fail", e);
             }
         }
-        task.getWorkerTaskIds().forEach(t -> workerCrackTasks.put(t, task));
         requests.put(uuid, task);
         log.debug("Create task with id {}", uuid);
         return uuid;
     }
 
-    public void applyWorkerResult(@NotNull String taskId, @NotNull List<String> results) {
-        log.debug("Apply worker results for task={}, count of result={}", taskId, results.size());
-        workerCrackTasks.get(taskId).setResult(taskId, results);
+    public void applyWorkerResult(@NotNull String requestId, int partNumber, @NotNull List<String> results) {
+        log.info("Apply worker results for task={} part={}, count of result={}", requestId, partNumber, results.size());
+        CrackTask task = requests.get(requestId);
+        if (task == null) throw new ServiceException(ErrorStatus.WRONG_ARGS, "Can't found that task");
+        task.setResult(partNumber, results);
     }
 
     @NotNull

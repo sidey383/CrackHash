@@ -1,9 +1,9 @@
 package ru.sidey383.crackhash.manager;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.sidey383.crackhash.core.dto.ManagerCallbackAnswer;
 import ru.sidey383.crackhash.core.dto.ManagerCallbackRequest;
 import ru.sidey383.crackhash.manager.dto.CrackStartAnswer;
 import ru.sidey383.crackhash.manager.dto.CrackStartRequest;
@@ -37,18 +37,22 @@ public class ManagerRestController {
     @GetMapping("/api/hash/status")
     public CrackStatusAnswer crackStatus(
             @RequestParam("requestId")
+            @NotBlank
             String requestId
     ) {
         return managerCrackService.getStatus(requestId);
     }
 
     @PatchMapping("/internal/api/manager/hash/crack/request")
-    public ManagerCallbackAnswer crackRequestAnswer(
+    public void crackRequestAnswer(
             @Valid @RequestBody
             ManagerCallbackRequest callbackRequest
     ) {
-        managerCrackService.applyWorkerResult(callbackRequest.taskId(), callbackRequest.matches());
-        return new ManagerCallbackAnswer("Ok");
+        managerCrackService.applyWorkerResult(
+                callbackRequest.requestId(),
+                callbackRequest.partNumber(),
+                callbackRequest.answers()
+        );
     }
 
 }

@@ -13,8 +13,6 @@ import java.util.List;
 @ConfigurationProperties(prefix = "worker")
 public class WorkerConfig {
 
-    public WorkerConfig() {}
-
     private List<String> address;
 
 }

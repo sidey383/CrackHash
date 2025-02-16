@@ -7,7 +7,6 @@ import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import ru.sidey383.crackhash.core.dto.ManagerCallbackAnswer;
 import ru.sidey383.crackhash.core.dto.ManagerCallbackRequest;
 
 import java.net.URI;
@@ -26,7 +25,7 @@ public class ManagerNodeProvider {
     public void sendAnswer(@NotNull ManagerCallbackRequest request) throws RestClientException, URISyntaxException {
         URI uri = new URI(managerAddress);
         URI target = uri.resolve("/internal/api/manager/hash/crack/request");
-        restTemplate.patchForObject(target, request, ManagerCallbackAnswer.class);
+        restTemplate.patchForObject(target, request, Void.class);
     }
 
 }

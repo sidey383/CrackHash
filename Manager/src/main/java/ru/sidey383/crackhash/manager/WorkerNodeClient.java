@@ -5,8 +5,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import ru.nsu.ccfit.schema.crack_hash_request.CrackHashManagerRequest;
+import ru.sidey383.crackhash.core.APIWorkerEndpoint;
 import ru.sidey383.crackhash.core.ServiceException;
-import ru.sidey383.crackhash.core.dto.WorkerPartialCrackRequest;
 
 import java.net.URI;
 
@@ -16,11 +17,11 @@ public class WorkerNodeClient {
 
     @Getter
     private final URI uri;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     @NotNull
-    public void sendRequest(@NotNull WorkerPartialCrackRequest request) throws RestClientException, ServiceException {
-        URI target = uri.resolve("/internal/api/worker/hash/crack/task");
+    public void sendRequest(@NotNull CrackHashManagerRequest request) throws RestClientException, ServiceException {
+        URI target = uri.resolve(APIWorkerEndpoint.INTERNAL_WORKER_HASH_CRACK_TASK);
         restTemplate.postForEntity(target, request, Void.class);
     }
 

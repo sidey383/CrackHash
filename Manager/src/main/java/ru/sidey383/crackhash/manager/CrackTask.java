@@ -34,4 +34,8 @@ public class CrackTask {
                 .toList();
     }
 
+    public int getPartCount() {
+        return results.size();
+    }
+
 }

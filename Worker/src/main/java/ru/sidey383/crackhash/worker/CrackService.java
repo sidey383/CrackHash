@@ -5,14 +5,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
-import ru.sidey383.crackhash.core.dto.ManagerCallbackRequest;
+import ru.nsu.ccfit.schema.crack_hash_response.CrackHashWorkerResponse;
 import ru.sidey383.crackhash.worker.permutation.IterableWords;
 
 import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HexFormat;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -45,13 +47,18 @@ public class CrackService {
                 HexFormat.of().parseHex(hash),
                 words
         );
-        log.debug("Start partial crack task. Check {} worlds of {}. From {} to {}", count, totalCount, start, end);
+        log.info("Start partial crack task {} with part number {}. Check {} worlds of {}. From {} to {}", requestId, partNumber, count, totalCount, start, end);
         executors.execute(task);
     }
 
     public void completeTask(@NotNull String requestId, int partNumber, @NotNull List<String> result) {
-        log.debug("Task {} part {} completed with {} results", requestId, partNumber, result.size());
-        ManagerCallbackRequest request = new ManagerCallbackRequest(requestId, partNumber, result);
+        log.info("Complete partial crack task Task {} part {} completed with {} results", requestId, partNumber, result.size());
+        CrackHashWorkerResponse request = new CrackHashWorkerResponse();
+        request.setRequestId(requestId);
+        request.setPartNumber(partNumber);
+        var answer = new CrackHashWorkerResponse.Answers();
+        answer.getWords().addAll(result);
+        request.setAnswers(answer);
         try {
             managerNodeProvider.sendAnswer(request);
         } catch (RestClientException e) {

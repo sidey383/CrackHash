@@ -3,8 +3,8 @@ package ru.sidey383.crackhash.manager;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import ru.sidey383.crackhash.core.ServiceException;
 
 import java.net.URI;
@@ -19,6 +19,7 @@ import java.util.List;
 public class WorkerNodeProvider {
 
     private final WorkerConfig workerConfig;
+    private final RestTemplate restTemplate;
 
     @NotNull
     public List<WorkerNodeClient> getActualNodes() throws ServiceException {
@@ -31,7 +32,7 @@ public class WorkerNodeProvider {
                 log.error("Can't parser server URI", uriSyntaxException);
                 throw new ServiceException("Wrong configuration", uriSyntaxException);
             }
-            nodes.add(new WorkerNodeClient(uri));
+            nodes.add(new WorkerNodeClient(uri, restTemplate));
         }
         return Collections.unmodifiableList(nodes);
     }

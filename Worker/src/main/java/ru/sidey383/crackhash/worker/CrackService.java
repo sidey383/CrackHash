@@ -4,12 +4,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
-import ru.nsu.ccfit.schema.crack_hash_response.CrackHashWorkerResponse;
+import ru.sidey383.crackhash.core.dto.CrackHashWorkerResponse;
+import ru.sidey383.crackhash.worker.messaging.WorkerResultPublisher;
 import ru.sidey383.crackhash.worker.permutation.IterableWords;
 
 import java.math.BigInteger;
-import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
@@ -25,7 +24,7 @@ public class CrackService {
 
     private final ExecutorService executors = Executors.newCachedThreadPool();
 
-    private final ManagerNodeProvider managerNodeProvider;
+    private final WorkerResultPublisher workerResultPublisher;
 
     public void startCrack(
             @NotNull String requestId,
@@ -53,19 +52,11 @@ public class CrackService {
 
     public void completeTask(@NotNull String requestId, int partNumber, @NotNull List<String> result) {
         log.info("Complete partial crack task Task {} part {} completed with {} results", requestId, partNumber, result.size());
-        CrackHashWorkerResponse request = new CrackHashWorkerResponse();
-        request.setRequestId(requestId);
-        request.setPartNumber(partNumber);
-        var answer = new CrackHashWorkerResponse.Answers();
-        answer.getWords().addAll(result);
-        request.setAnswers(answer);
-        try {
-            managerNodeProvider.sendAnswer(request);
-        } catch (RestClientException e) {
-            log.error("Fail to send result" ,e);
-        } catch (URISyntaxException e) {
-            log.error("Wrong uri syntax for manager", e);
-        }
+        workerResultPublisher.sendWorkResult(CrackHashWorkerResponse.builder()
+                .requestId(requestId)
+                .partNumber(partNumber)
+                .result(result)
+                .build());
     }
 
 }

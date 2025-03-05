@@ -5,12 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class MessagingConfig {
-
-    @Bean
-    public FanoutExchange heartbeatExchange() {
-        return new FanoutExchange("heartbeat_exchange", true, false);
-    }
+public class ManagerConfig {
 
     @Bean
     public Queue heartbeatQueue() {
@@ -21,6 +16,5 @@ public class MessagingConfig {
     public Binding heartbeatBinding(FanoutExchange heartbeatExchange, Queue heartbeatQueue) {
         return BindingBuilder.bind(heartbeatQueue).to(heartbeatExchange);
     }
-
 
 }

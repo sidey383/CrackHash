@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +15,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class HeartbeatProducer {
 
+    @Qualifier("heartbeatExchange")
     private final Exchange heartbeatExchange;
+    @Qualifier("timeoutRabbitTemplate")
     private final RabbitTemplate rabbitTemplate;
+    @Qualifier("workerId")
     private final UUID workerId;
 
     @Scheduled(fixedRateString = "${heartbeat.sendRate}")

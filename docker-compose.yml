@@ -1,8 +1,7 @@
 services:
-  manager:
+  manager1:
     image: crackhash-manager:latest
     restart: unless-stopped
-    hostname: "manager"
     stdin_open: true
     tty: true
     ports:
@@ -10,14 +9,18 @@ services:
     networks:
       - crackhash
     environment:
-      WORKER_ADDRESS_0: http://crackhash-worker-1:8081
-      WORKER_ADDRESS_1: http://crackhash-worker-2:8081
-      WORKER_ADDRESS_2: http://crackhash-worker-3:8081
-      WORKER_ADDRESS_3: http://crackhash-worker-4:8081
-      WORKER_ADDRESS_4: http://crackhash-worker-5:8081
-      WORKER_ADDRESS_5: http://crackhash-worker-6:8081
-      WORKER_ADDRESS_6: http://crackhash-worker-7:8081
-      WORKER_ADDRESS_7: http://crackhash-worker-8:8081
+      SPRING_PROFILES_ACTIVE: docker
+  manager2:
+    image: crackhash-manager:latest
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - "8081:8080"
+    networks:
+      - crackhash
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
   worker:
     image: crackhash-worker:latest
     restart: unless-stopped
@@ -26,19 +29,20 @@ services:
     networks:
       - crackhash
     environment:
-      MANAGER_ADDRESS: http://crackhash-manager-1:8080
+      SPRING_PROFILES_ACTIVE: docker
       BPL_JVM_THREAD_COUNT: 50
       BPL_JVM_HEAP_SIZE: 200M
       BPL_JVM_CALCULATE_HEAP: false
       JAVA_TOOL_OPTIONS: "-Xmx250M -Xms100M -XX:MaxMetaspaceSize=64M -XX:ReservedCodeCacheSize=64M -XX:MaxDirectMemorySize=8M"
     deploy:
       replicas: 8
-  rabittmq:
+  rabbitmq:
     image: rabbitmq:management
     restart: unless-stopped
     stdin_open: true
     tty: true
     ports:
+      - "5672:5672"
       - "15672:15672"
     networks:
       - crackhash
@@ -47,6 +51,13 @@ services:
       RABBITMQ_DEFAULT_PASS: password
   mongodb:
     image: mongo:latest
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - "27017:27017"
+    networks:
+      - crackhash
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
@@ -59,3 +70,5 @@ services:
 networks:
   crackhash:
     driver: bridge
+volumes:
+  mongodb_data_container:

@@ -36,7 +36,6 @@ tasks.bootBuildImage {
     environment.set(
         mapOf(
             "SPRING_PROFILES_ACTIVE" to "docker",
-            "MANAGER_ADDRESS" to "http://manager:8080",
             "BP_JVM_VERSION" to "21",
             "BP_JVM_TYPE" to "jdk"
         )

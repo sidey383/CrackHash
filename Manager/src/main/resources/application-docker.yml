@@ -12,4 +12,4 @@ spring:
     virtual-host: /
   data:
     mongodb:
-      uri: mongodb://root:rootpassword@mongodb:27017/worker?authSource=admin
+      uri: ${MONGODB_URL:mongodb://root:rootpassword@mongodb:27017/worker?authSource=admin}

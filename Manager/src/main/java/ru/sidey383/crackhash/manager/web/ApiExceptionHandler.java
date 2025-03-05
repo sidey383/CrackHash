@@ -1,4 +1,4 @@
-package ru.sidey383.crackhash.core;
+package ru.sidey383.crackhash.manager.web;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import ru.sidey383.crackhash.manager.exception.ServiceException;
 
 @Slf4j
 @ControllerAdvice

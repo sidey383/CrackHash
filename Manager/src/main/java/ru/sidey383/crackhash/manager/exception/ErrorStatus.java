@@ -1,4 +1,4 @@
-package ru.sidey383.crackhash.core;
+package ru.sidey383.crackhash.manager.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package ru.sidey383.crackhash.core;
+package ru.sidey383.crackhash.manager.web;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

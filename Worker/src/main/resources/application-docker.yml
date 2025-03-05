@@ -1,5 +1,7 @@
 heartbeat:
   sendRate: 5000
+worker:
+  concurrency: ${WORKER_CONCURRENCY:5}
 spring:
   rabbitmq:
     host: rabbitmq

@@ -20,7 +20,7 @@ public class WorkListener {
 
     private final CrackService crackService;
 
-    @RabbitListener(queues = "#{crackRequestBinding.destination}")
+    @RabbitListener(queues = "#{crackRequestBinding.destination}", concurrency = "${worker.concurrency:5}")
     public void onCrackHashWorkerResponse(@Valid @Payload CrackHashManagerRequest request) throws NoSuchAlgorithmException {
         List<Character> alphabet = request.getAlphabet().stream()
                 .filter(Objects::nonNull)

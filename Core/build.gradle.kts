@@ -20,10 +20,8 @@ dependencies {
     }
 
     implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("jakarta.validation:jakarta.validation-api:3.0.0")
-    implementation("org.apache.httpcomponents.client5:httpclient5:5.4.2")
 
     compileOnly("org.projectlombok:lombok:1.18.36")
     annotationProcessor("org.projectlombok:lombok:1.18.36")

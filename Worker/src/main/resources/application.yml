@@ -1,5 +1,7 @@
 heartbeat:
   sendRate: 5000
+worker:
+  concurrency: 5
 spring:
   rabbitmq:
     host: localhost

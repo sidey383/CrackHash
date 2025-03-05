@@ -1,10 +1,10 @@
-package ru.sidey383.crackhash.manager;
+package ru.sidey383.crackhash.manager.web;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.sidey383.crackhash.core.APIManagerEndpoint;
+import ru.sidey383.crackhash.manager.ManagerCrackService;
 import ru.sidey383.crackhash.manager.dto.CrackStartAnswer;
 import ru.sidey383.crackhash.manager.dto.CrackStartRequest;
 import ru.sidey383.crackhash.manager.dto.CrackStatusAnswer;

@@ -14,15 +14,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.HexFormat;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CrackService {
 
-    private final ExecutorService executors = Executors.newCachedThreadPool();
 
     private final WorkerResultPublisher workerResultPublisher;
 
@@ -47,7 +44,7 @@ public class CrackService {
                 words
         );
         log.info("Start partial crack task {} with part number {}. Check {} words of {}. From {} to {}", requestId, partNumber, count, totalCount, start, end);
-        executors.execute(task);
+        task.run();
     }
 
     public void completeTask(@NotNull String requestId, int partNumber, @NotNull List<String> result) {

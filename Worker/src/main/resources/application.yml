@@ -3,3 +3,12 @@ server:
 
 manager:
   address: http://localhost:8080
+heartbeat:
+  sendRate: 5000
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: password
+    virtual-host: /

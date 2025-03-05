@@ -47,7 +47,7 @@ public class CrackService {
                 HexFormat.of().parseHex(hash),
                 words
         );
-        log.info("Start partial crack task {} with part number {}. Check {} worlds of {}. From {} to {}", requestId, partNumber, count, totalCount, start, end);
+        log.info("Start partial crack task {} with part number {}. Check {} words of {}. From {} to {}", requestId, partNumber, count, totalCount, start, end);
         executors.execute(task);
     }
 

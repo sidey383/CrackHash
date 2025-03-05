@@ -2,3 +2,16 @@ server:
   port: 8080
 worker:
   address: ${WORKER_ADDRESS}
+heartbeat:
+  clearRate: 5000
+  timeout: 10000
+spring:
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: user
+    password: password
+    virtual-host: /
+  data:
+    mongodb:
+      uri: mongodb://root:rootpassword@mongodb:27017/worker?authSource=admin

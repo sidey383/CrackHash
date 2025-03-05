@@ -2,6 +2,7 @@ import java.util.Locale
 
 plugins {
     java
+    id("org.springframework.boot")
     id("io.spring.dependency-management")
     id("org.unbroken-dome.xjc") version "2.0.0"
 }
@@ -25,6 +26,7 @@ dependencies {
     implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.0")
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.3")
     implementation("org.glassfish.jaxb:jaxb-core:4.0.3")
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
 
     compileOnly("org.projectlombok:lombok:1.18.36")
     annotationProcessor("org.projectlombok:lombok:1.18.36")
@@ -33,6 +35,15 @@ dependencies {
 xjc {
     xjcVersion = "3.0"
     docLocale.set(Locale.ENGLISH)
+}
+
+tasks {
+    bootJar {
+        enabled = false
+    }
+    bootBuildImage {
+        enabled = false
+    }
 }
 
 java {

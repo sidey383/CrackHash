@@ -1,7 +1,5 @@
 server:
   port: 8080
-worker:
-  address: ${WORKER_ADDRESS}
 heartbeat:
   clearRate: 5000
   timeout: 10000

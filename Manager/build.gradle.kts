@@ -15,9 +15,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4")
     implementation("org.jetbrains:annotations:24.0.0")
     implementation("org.hibernate.validator:hibernate-validator:8.0.2.Final")
-    implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
     compileOnly("org.projectlombok:lombok:1.18.36")
     annotationProcessor("org.projectlombok:lombok:1.18.36")
 }

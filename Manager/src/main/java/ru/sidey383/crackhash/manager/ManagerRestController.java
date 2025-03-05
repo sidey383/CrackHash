@@ -25,7 +25,7 @@ public class ManagerRestController {
 
     private final ManagerCrackService managerCrackService;
 
-    @GetMapping(APIManagerEndpoint.HASH_CRACK)
+    @PostMapping(APIManagerEndpoint.HASH_CRACK)
     public CrackStartAnswer createCrack(
             @Valid @RequestBody
             CrackStartRequest request

@@ -1,5 +1,7 @@
 package ru.sidey383.crackhash.manager.data;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +13,8 @@ import java.util.stream.IntStream;
 
 @Getter
 @Document(collection = "crack_tasks")
-@NoArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CrackTask {
     @Id
     private UUID uuid = UUID.randomUUID();
@@ -20,16 +23,17 @@ public class CrackTask {
 
     private int maxLength;
 
-    private Map<Integer, List<String>> results;
+    private Map<Integer, List<String>> results  = new HashMap<>();
 
-    private Set<Character> alphabet;
+    private Set<Character> alphabet = Set.of();
 
     private Integer partCount;
+
+    private Boolean sent = false;
 
     public CrackTask(String hash, int maxLength, Collection<Character> alphabet, int partCount) {
         this.partCount = partCount;
         this.alphabet = Set.copyOf(alphabet);
-        this.results = new HashMap<>();
         this.hash = hash;
         this.maxLength = maxLength;
     }

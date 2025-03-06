@@ -1,5 +1,7 @@
 server:
   port: 8080
+1manager:
+  sendRetry: 30000
 heartbeat:
   clearRate: 5000
   timeout: 10000

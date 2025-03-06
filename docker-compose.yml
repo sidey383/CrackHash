@@ -49,6 +49,8 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: user
       RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - rabbitmq_data_container:/var/lib/rabbitmq
   mongodb:
     image: mongo:latest
     restart: unless-stopped
@@ -72,3 +74,4 @@ networks:
     driver: bridge
 volumes:
   mongodb_data_container:
+  rabbitmq_data_container:

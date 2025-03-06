@@ -7,7 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import ru.sidey383.crackhash.manager.ManagerCrackService;
 import ru.sidey383.crackhash.manager.dto.CrackStartAnswer;
 import ru.sidey383.crackhash.manager.dto.CrackStartRequest;
+import ru.sidey383.crackhash.manager.dto.CrackStatus;
 import ru.sidey383.crackhash.manager.dto.CrackStatusAnswer;
+import ru.sidey383.crackhash.manager.exception.ErrorStatus;
+import ru.sidey383.crackhash.manager.exception.ServiceException;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,7 +43,14 @@ public class ManagerRestController {
             @NotBlank
             String requestId
     ) {
-        return managerCrackService.getStatus(requestId);
+        try {
+            return managerCrackService.getStatus(requestId);
+        } catch (ServiceException e) {
+            if (e.getErrorStatus() == ErrorStatus.WRONG_ARGS)
+                return new CrackStatusAnswer(CrackStatus.ERROR, null);
+            else
+                throw e;
+        }
     }
 
 }

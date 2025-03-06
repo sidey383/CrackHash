@@ -9,7 +9,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import ru.sidey383.crackhash.manager.dto.ErrorAnswer;
 import ru.sidey383.crackhash.manager.exception.ServiceException;
+
+import java.util.UUID;
 
 @Slf4j
 @ControllerAdvice
@@ -24,51 +27,85 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorAnswer> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        UUID uuid = UUID.randomUUID();
+        log.info("Fail with error {}", uuid, ex);
         return new ResponseEntity<>(
-                "field %s %s".formatted(
-                        ex.getBindingResult().getFieldErrors().getFirst().getField(),
-                        ex.getBindingResult().getFieldErrors().getFirst().getDefaultMessage()
+                new ErrorAnswer(
+                        "ERROR",
+                        "Wrong arguments",
+                        "field %s %s".formatted(
+                                ex.getBindingResult().getFieldErrors().getFirst().getField(),
+                                ex.getBindingResult().getFieldErrors().getFirst().getDefaultMessage()
+                        ),
+                        uuid
                 ),
                 HttpStatus.BAD_REQUEST
         );
     }
 
     @ExceptionHandler(value = {HttpMessageNotReadableException.class})
-    public ResponseEntity<String> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+    public ResponseEntity<ErrorAnswer> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        UUID uuid = UUID.randomUUID();
+        log.info("Fail with error {}", uuid, ex);
         return new ResponseEntity<>(
-                "Can't read request body",
+                new ErrorAnswer(
+                        "ERROR",
+                        "Wrong request",
+                        ex.getMessage(),
+                        uuid
+                ),
                 HttpStatus.BAD_REQUEST
         );
     }
 
     @ExceptionHandler(value = {ConstraintViolationException.class})
-    public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException ex) {
+    public ResponseEntity<ErrorAnswer> handleConstraintViolationException(ConstraintViolationException ex) {
+        UUID uuid = UUID.randomUUID();
+        log.info("Fail with error {}", uuid, ex);
         return new ResponseEntity<>(
-                "field %s %s".formatted(
-                        ex.getConstraintViolations().stream().toList().getFirst().getPropertyPath(),
-                        ex.getConstraintViolations().stream().toList().getFirst().getMessage()
+                new ErrorAnswer(
+                        "ERROR",
+                        "Wrong arguments",
+                        "field %s %s".formatted(
+                                ex.getConstraintViolations().stream().toList().getFirst().getPropertyPath(),
+                                ex.getConstraintViolations().stream().toList().getFirst().getMessage()
+                        ),
+                        uuid
                 ),
                 HttpStatus.BAD_REQUEST
         );
     }
 
     @ExceptionHandler(value = {MethodArgumentTypeMismatchException.class})
-    public ResponseEntity<String> handleMethodArgumentTypeMismatchException(
+    public ResponseEntity<ErrorAnswer> handleMethodArgumentTypeMismatchException(
             MethodArgumentTypeMismatchException ex
     ) {
+        UUID uuid = UUID.randomUUID();
+        log.info("Fail with error {}", uuid, ex);
         return new ResponseEntity<>(
-                "Wrong request format",
+                new ErrorAnswer(
+                        "ERROR",
+                        "Wrong argument type",
+                        ex.getMessage(),
+                        uuid
+                ),
                 HttpStatus.BAD_REQUEST
         );
     }
 
     @ExceptionHandler(value = RuntimeException.class)
-    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
-        log.error("Runtime exception", ex);
+    public ResponseEntity<ErrorAnswer> handleRuntimeException(RuntimeException ex) {
+        UUID uuid = UUID.randomUUID();
+        log.info("Fail with error {}", uuid, ex);
         return new ResponseEntity<>(
-                "Internal error",
-                HttpStatus.INTERNAL_SERVER_ERROR
+                new ErrorAnswer(
+                        "ERROR",
+                        "Internal error",
+                        ex.getClass().toString(),
+                        uuid
+                ),
+                HttpStatus.BAD_REQUEST
         );
     }
 

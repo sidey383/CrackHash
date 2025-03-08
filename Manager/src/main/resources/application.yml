@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 manager:
   sendRetry: 30000
 heartbeat:
@@ -14,4 +14,4 @@ spring:
     virtual-host: /
   data:
     mongodb:
-      uri: mongodb://root:rootpassword@localhost:27017/worker?authSource=admin
+      uri: mongodb://myuser:mypassword@localhost:27017/worker?authSource=admin

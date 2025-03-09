@@ -1,4 +1,4 @@
-package ru.sidey383.crackhash.core;
+package ru.sidey383.crackhash.manager.web;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -7,5 +7,4 @@ import lombok.NoArgsConstructor;
 public class APIManagerEndpoint {
     public static final String HASH_CRACK = "/api/hash/crack";
     public static final String HASH_STATUS = "/api/hash/status";
-    public static final String INTERNAL_MANAGER_HASH_CRACK_REQUEST = "/internal/api/manager/hash/crack/request";
 }

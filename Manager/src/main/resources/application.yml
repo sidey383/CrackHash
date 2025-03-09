@@ -1,6 +1,17 @@
 server:
-  port: 8080
-
-worker:
-  address:
-  - http://localhost:8081
+  port: 8081
+manager:
+  sendRetry: 30000
+heartbeat:
+  clearRate: 5000
+  timeout: 10000
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: password
+    virtual-host: /
+  data:
+    mongodb:
+      uri: mongodb://myuser:mypassword@localhost:27017/worker?authSource=admin

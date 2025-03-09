@@ -1,5 +1,11 @@
-server:
-  port: 8081
-
-manager:
-  address: http://localhost:8080
+heartbeat:
+  sendRate: 5000
+worker:
+  concurrency: 5
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: password
+    virtual-host: /

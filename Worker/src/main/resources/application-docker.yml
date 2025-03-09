@@ -1,5 +1,11 @@
-server:
-  port: 8081
-
-manager:
-  address: ${MANAGER_ADDRESS}
+heartbeat:
+  sendRate: 5000
+worker:
+  concurrency: ${WORKER_CONCURRENCY:5}
+spring:
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: user
+    password: password
+    virtual-host: /

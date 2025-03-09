@@ -1,0 +1,121 @@
+services:
+  manager1:
+    image: crackhash-manager:latest
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - "8080:8080"
+    networks:
+      - crackhash
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      MONGODB_URL: mongodb://mongo1:27017,mongo2:27017,mongo3:27017/worker?authSource=admin
+  worker:
+    image: crackhash-worker:latest
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    networks:
+      - crackhash
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      BPL_JVM_THREAD_COUNT: 50
+      BPL_JVM_HEAP_SIZE: 200M
+      BPL_JVM_CALCULATE_HEAP: false
+      JAVA_TOOL_OPTIONS: "-Xmx250M -Xms100M -XX:MaxMetaspaceSize=64M -XX:ReservedCodeCacheSize=64M -XX:MaxDirectMemorySize=8M"
+    deploy:
+      replicas: 8
+  rabbitmq:
+    image: rabbitmq:management
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - crackhash
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - rabbitmq_data_container:/var/lib/rabbitmq
+  mongo:
+    container_name: mongo
+    image: mongo:4.4
+    volumes:
+      - mongodb_data_container:/data/db
+    ports:
+      - 27017:27017
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: myuser
+      MONGO_INITDB_ROOT_PASSWORD: mypassword
+      MONGO_INITDB_DATABASE: worker
+      DB_USERNAME: myuser
+      DB_PASSWORD: mypassword
+  mongo1:
+    container_name: mongo1
+    image: mongo:4.4
+    volumes:
+      - mongodb_data_container_1:/data/db
+      - ./rs-init.txt:/scripts/rs-init.txt
+    networks:
+      - crackhash
+    ports:
+      - 27021:27017
+    links:
+      - mongo2
+      - mongo3
+    restart: always
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: myuser
+      MONGO_INITDB_ROOT_PASSWORD: mypassword
+      MONGO_INITDB_DATABASE: worker
+      DB_USERNAME: myuser
+      DB_PASSWORD: mypassword
+  mongo2:
+    container_name: mongo2
+    image: mongo:4.4
+    volumes:
+      - mongodb_data_container_2:/data/db
+    networks:
+      - crackhash
+    ports:
+      - 27022:27017
+    restart: always
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: myuser
+      MONGO_INITDB_ROOT_PASSWORD: mypassword
+      MONGO_INITDB_DATABASE: worker
+      DB_USERNAME: myuser
+      DB_PASSWORD: mypassword
+  mongo3:
+    container_name: mongo3
+    image: mongo:4.4
+    volumes:
+      - mongodb_data_container_3:/data/db
+    networks:
+      - crackhash
+    ports:
+      - 27023:27017
+    restart: always
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: myuser
+      MONGO_INITDB_ROOT_PASSWORD: mypassword
+      MONGO_INITDB_DATABASE: worker
+      DB_USERNAME: myuser
+      DB_PASSWORD: mypassword
+networks:
+  crackhash:
+    driver: bridge
+volumes:
+  mongodb_data_container:
+  mongodb_data_container_1:
+  mongodb_data_container_2:
+  mongodb_data_container_3:
+  rabbitmq_data_container:

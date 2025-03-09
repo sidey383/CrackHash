@@ -1,4 +1,15 @@
 server:
   port: 8080
-worker:
-  address: ${WORKER_ADDRESS}
+heartbeat:
+  clearRate: 5000
+  timeout: 10000
+spring:
+  rabbitmq:
+    host: ${RABBITMQ_HOST:rabbitmq}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:user}
+    password: ${RABBITMQ_PASSWORD:password}
+    virtual-host: ${RABBITMQ_VIRTUAL_HOST:/}
+  data:
+    mongodb:
+      uri: ${MONGODB_URL:mongodb://root:rootpassword@mongodb:27017/worker?authSource=admin}

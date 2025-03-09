@@ -1,14 +1,16 @@
-package ru.sidey383.crackhash.manager;
+package ru.sidey383.crackhash.manager.web;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.nsu.ccfit.schema.crack_hash_response.CrackHashWorkerResponse;
-import ru.sidey383.crackhash.core.APIManagerEndpoint;
+import ru.sidey383.crackhash.manager.ManagerCrackService;
 import ru.sidey383.crackhash.manager.dto.CrackStartAnswer;
 import ru.sidey383.crackhash.manager.dto.CrackStartRequest;
+import ru.sidey383.crackhash.manager.dto.CrackStatus;
 import ru.sidey383.crackhash.manager.dto.CrackStatusAnswer;
+import ru.sidey383.crackhash.manager.exception.ErrorStatus;
+import ru.sidey383.crackhash.manager.exception.ServiceException;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,7 +28,7 @@ public class ManagerRestController {
 
     private final ManagerCrackService managerCrackService;
 
-    @GetMapping(APIManagerEndpoint.HASH_CRACK)
+    @PostMapping(APIManagerEndpoint.HASH_CRACK)
     public CrackStartAnswer createCrack(
             @Valid @RequestBody
             CrackStartRequest request
@@ -41,19 +43,14 @@ public class ManagerRestController {
             @NotBlank
             String requestId
     ) {
-        return managerCrackService.getStatus(requestId);
-    }
-
-    @PatchMapping(APIManagerEndpoint.INTERNAL_MANAGER_HASH_CRACK_REQUEST)
-    public void crackRequestAnswer(
-            @Valid @RequestBody
-            CrackHashWorkerResponse callbackRequest
-    ) {
-        managerCrackService.applyWorkerResult(
-                callbackRequest.getRequestId(),
-                callbackRequest.getPartNumber(),
-                callbackRequest.getAnswers().getWords()
-        );
+        try {
+            return managerCrackService.getStatus(requestId);
+        } catch (ServiceException e) {
+            if (e.getErrorStatus() == ErrorStatus.WRONG_ARGS)
+                return new CrackStatusAnswer(CrackStatus.ERROR, null);
+            else
+                throw e;
+        }
     }
 
 }
